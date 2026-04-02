@@ -1,0 +1,226 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+class SET {
+private:
+    vector<int> elements;
+
+public:
+    // Function to input elements
+    void inputSet() {
+        int n, x;
+        cout << "Enter number of elements: ";
+        cin >> n;
+
+        cout << "Enter elements:\n";
+        for (int i = 0; i < n; i++) {
+            cin >> x;
+            if (find(elements.begin(), elements.end(), x) == elements.end())
+                elements.push_back(x); // avoid duplicates
+        }
+    }
+
+    // Display set
+    void display() {
+        cout << "{ ";
+        for (int x : elements)
+            cout << x << " ";
+        cout << "}\n";
+    }
+
+    // 1. Check membership
+    bool isMember(int x) {
+        return find(elements.begin(), elements.end(), x) != elements.end();
+    }
+
+    // 2. Power set
+    void powerSet() {
+        int n = elements.size();
+        int total = 1 << n; // 2^n subsets
+
+        cout << "Power Set:\n";
+        for (int i = 0; i < total; i++) {
+            cout << "{ ";
+            for (int j = 0; j < n; j++) {
+                if (i & (1 << j))
+                    cout << elements[j] << " ";
+            }
+            cout << "}\n";
+        }
+    }
+
+    // 3. Subset check
+    bool isSubset(SET s2) {
+        for (int x : elements) {
+            if (!s2.isMember(x))
+                return false;
+        }
+        return true;
+    }
+
+    // 4. Union
+    SET unionSet(SET s2) {
+        SET result = *this;
+
+        for (int x : s2.elements) {
+            if (!result.isMember(x))
+                result.elements.push_back(x);
+        }
+        return result;
+    }
+
+    // 4. Intersection
+    SET intersectionSet(SET s2) {
+        SET result;
+
+        for (int x : elements) {
+            if (s2.isMember(x))
+                result.elements.push_back(x);
+        }
+        return result;
+    }
+
+    // 5. Complement
+    SET complement(SET universal) {
+        SET result;
+
+        for (int x : universal.elements) {
+            if (!isMember(x))
+                result.elements.push_back(x);
+        }
+        return result;
+    }
+
+    // 6. Difference (A - B)
+    SET difference(SET s2) {
+        SET result;
+
+        for (int x : elements) {
+            if (!s2.isMember(x))
+                result.elements.push_back(x);
+        }
+        return result;
+    }
+
+    // 6. Symmetric Difference
+    SET symmetricDifference(SET s2) {
+        SET result;
+
+        for (int x : elements) {
+            if (!s2.isMember(x))
+                result.elements.push_back(x);
+        }
+
+        for (int x : s2.elements) {
+            if (!isMember(x))
+                result.elements.push_back(x);
+        }
+
+        return result;
+    }
+
+    // 7. Cartesian Product
+    void cartesianProduct(SET s2) {
+        cout << "Cartesian Product:\n";
+        for (int x : elements) {
+            for (int y : s2.elements) {
+                cout << "(" << x << ", " << y << ") ";
+            }
+            cout << endl;
+        }
+    }
+};
+
+int main() {
+    SET A, B, U;
+    int choice, x;
+
+    cout << "Enter Set A:\n";
+    A.inputSet();
+
+    cout << "Enter Set B:\n";
+    B.inputSet();
+
+    cout << "Enter Universal Set:\n";
+    U.inputSet();
+
+    do {
+        cout << "\n--- MENU ---\n";
+        cout << "1. Check Membership\n";
+        cout << "2. Power Set of A\n";
+        cout << "3. Check Subset (A subset of B)\n";
+        cout << "4. Union\n";
+        cout << "5. Intersection\n";
+        cout << "6. Complement of A\n";
+        cout << "7. Difference (A - B)\n";
+        cout << "8. Symmetric Difference\n";
+        cout << "9. Cartesian Product (A x B)\n";
+        cout << "0. Exit\n";
+
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        switch (choice) {
+        case 1:
+            cout << "Enter element: ";
+            cin >> x;
+            if (A.isMember(x))
+                cout << "Element is in Set A\n";
+            else
+                cout << "Element is NOT in Set A\n";
+            break;
+
+        case 2:
+            A.powerSet();
+            break;
+
+        case 3:
+            if (A.isSubset(B))
+                cout << "A is subset of B\n";
+            else
+                cout << "A is NOT subset of B\n";
+            break;
+
+        case 4:
+            cout << "Union: ";
+            A.unionSet(B).display();
+            break;
+
+        case 5:
+            cout << "Intersection: ";
+            A.intersectionSet(B).display();
+            break;
+
+        case 6:
+            cout << "Complement of A: ";
+            A.complement(U).display();
+            break;
+
+        case 7:
+            cout << "A - B: ";
+            A.difference(B).display();
+            break;
+
+        case 8:
+            cout << "Symmetric Difference: ";
+            A.symmetricDifference(B).display();
+            break;
+
+        case 9:
+            A.cartesianProduct(B);
+            break;
+
+        case 0:
+            cout << "Exiting...\n";
+            break;
+
+        default:
+            cout << "Invalid choice!\n";
+        }
+
+    } while (choice != 0);
+
+    return 0;
+}
