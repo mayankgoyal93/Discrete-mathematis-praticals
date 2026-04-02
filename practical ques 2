@@ -1,0 +1,100 @@
+#include <iostream>
+using namespace std;
+
+class Relation {
+    int n;
+    int matrix[10][10];
+
+public:
+    void input() {
+        cout << "Enter number of elements: ";
+        cin >> n;
+
+        cout << "Enter relation matrix:\n";
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                cin >> matrix[i][j];
+            }
+        }
+    }
+
+    // Reflexive check
+    bool isReflexive() {
+        for (int i = 0; i < n; i++) {
+            if (matrix[i][i] != 1)
+                return false;
+        }
+        return true;
+    }
+
+    // Symmetric check
+    bool isSymmetric() {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] != matrix[j][i])
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    // Antisymmetric check
+    bool isAntisymmetric() {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i != j && matrix[i][j] == 1 && matrix[j][i] == 1)
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    // Transitive check
+    bool isTransitive() {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] == 1) {
+                    for (int k = 0; k < n; k++) {
+                        if (matrix[j][k] == 1 && matrix[i][k] != 1)
+                            return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    void checkRelation() {
+        bool reflexive = isReflexive();
+        bool symmetric = isSymmetric();
+        bool antisymmetric = isAntisymmetric();
+        bool transitive = isTransitive();
+
+        cout << "\nProperties:\n";
+        cout << "Reflexive: " << (reflexive ? "Yes" : "No") << endl;
+        cout << "Symmetric: " << (symmetric ? "Yes" : "No") << endl;
+        cout << "Antisymmetric: " << (antisymmetric ? "Yes" : "No") << endl;
+        cout << "Transitive: " << (transitive ? "Yes" : "No") << endl;
+
+        cout << "\nResult:\n";
+
+        if (reflexive && symmetric && transitive) {
+            cout << "It is an EQUIVALENCE RELATION.\n";
+        }
+        else if (reflexive && antisymmetric && transitive) {
+            cout << "It is a PARTIAL ORDER RELATION.\n";
+        }
+        else {
+            cout << "It is NONE.\n";
+        }
+    }
+};
+
+int main() {
+    Relation r;
+
+    r.input();
+    r.checkRelation();
+
+    return 0;
+}
